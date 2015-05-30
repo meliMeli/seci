@@ -1,0 +1,22 @@
+{% load static %}
+
+<html>
+  <head>
+    <title></title>
+    <link href='http://fonts.googleapis.com/css?family=Lato:200,300,400,600,700,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}" media="screen" />
+    </head>
+  <body>
+    {% block header %}
+    {% endblock %}
+
+    <section class="main" role="main">
+      {% block content %}
+      {% endblock %}
+    </section>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="{% static 'main/js/script.js' %}"></script>
+    {% block footer_scripts %}{% endblock %}
+  </body>
+</html>
