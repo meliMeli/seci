@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import MonthAggregationData, Location
+
+
+admin.site.register(Location)
+
+class MonthAggregationDataAdmin(admin.ModelAdmin):
+    list_display = ('location', 'year', 'month', 'events', 'event_type')
+admin.site.register(MonthAggregationData, MonthAggregationDataAdmin)

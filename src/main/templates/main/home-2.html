@@ -1,8 +1,5 @@
 {% extends 'main/base.html' %}
 
-{% load main_extras %}
-
-
 {% block header %}
 <div class="map">
   <div id="map-canvas" style="height:300px;"></div>
@@ -10,18 +7,15 @@
 {% endblock %}
 
 {% block content %}
-<div class="text-center give-me-space">
-  <div class="dropdown">
-    <div class="dropdown-container">
-      <p class="dropdown-description">Región</p>
-      <p class="dropdown-button">{% if location %}{{ location }}{% else %}Seleccionar{% endif %}</p>
-      <ul class="dropdown-menu dropdown-select">
-        {% for location in location_list %}
-        <li onclick="goToLocationWith({{ location.id }})">{{ location }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
+
+
+
+<div class="search-bar">
+    <input type="search" placeholder="Buscar ubicación" id="pac-input"/>
+    <button type="submit">
+    <img src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon.png"
+     alt="Search Icon">
+  </button>
 </div>
 
 <div class="search-results">
@@ -34,11 +28,6 @@
   <br />
   <br />
   <a href="{% url 'timeseries:generate_data' %}">Generate random data</a>
-</p>
-
-
-<p>
-  {{ data  }}
 </p>
 
 {% endblock %}
@@ -57,26 +46,13 @@
 function initialize() {
 
   var markers = [];
-
-  var mapOptions = {
-    zoom: 11,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-  };
-
-  var map = new google.maps.Map(document.getElementById('map-canvas'),
-      mapOptions);
-
+  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
 
   var defaultBounds = new google.maps.LatLngBounds(
-    {% if location %}
-      new google.maps.LatLng({{ location.latitude}} + 0.01, {{ location.longitude }} + 0.01),
-      new google.maps.LatLng({{ location.latitude}} - 0.01, {{ location.longitude }} - 0.01)
-    {% else %}
-      new google.maps.LatLng(-11.766071, -76.836120),
-      new google.maps.LatLng(-11.776071, -76.846120),
-      new google.maps.LatLng(-11.756071, -76.826120)
-    {% endif %}
-    );
+      new google.maps.LatLng(-33.8902, 151.1759),
+      new google.maps.LatLng(-33.8474, 151.2631));
   map.fitBounds(defaultBounds);
 
   // Create the search box and link it to the UI element.
@@ -126,21 +102,6 @@ function initialize() {
     map.fitBounds(bounds);
   });
 
-  // Add marker
-  {% if location %}
-  var myLatlng = new google.maps.LatLng({{ location.latitude }}, {{ location.longitude }});
-  var marker = new google.maps.Marker({
-      position: myLatlng,
-      map: map,
-      title: 'Hello World!'
-  });
-  var bounds = new google.maps.LatLngBounds();
-  bounds.extend(marker.getPosition());
-  bounds.extend(new google.maps.LatLng({{ location.latitude }} + 0.01, {{ location.longitude }} + 0.01));
-  bounds.extend(new google.maps.LatLng({{ location.latitude }} - 0.01, {{ location.longitude }} - 0.01));
-  map.fitBounds(bounds);
-  {% endif %}
-
   // Bias the SearchBox results towards places that are within the bounds of the
   // current map's viewport.
   google.maps.event.addListener(map, 'bounds_changed', function() {
@@ -150,69 +111,39 @@ function initialize() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
-
-
 </script>
 
 
 <script>
-var rgb_colors = [
-        "22, 160, 133",
-        "39, 174, 96",
-        "41, 128, 185",
-        "142, 68, 173",
-        "44, 62, 80",
-        "243, 156, 18",
-        "211, 84, 0",
-        "192, 57, 43",
-        "189, 195, 199",
-        "127, 140, 141",
-        "26, 188, 156",
-        "46, 204, 113",
-        "52, 152, 219",
-        "155, 89, 182",
-        "52, 73, 94",
-        "241, 196, 15",
-        "230, 126, 34",
-        "231, 76, 60",
-        "236, 240, 241",
-        "149, 165, 166",
-    ]
-
 var data = {
-    labels: [
-      {% for label in data.labels %}
-      "{{ label }}",
-      {% endfor %}
-    ],
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
-        {% for dataset_name, dataset in data.datasets.items %}
         {
-            label: "{{ dataset_name }}",
-            fillColor: "rgba(" + rgb_colors[{{ forloop.counter0 }}] + ",0.2)",
-            strokeColor: "rgba(" + rgb_colors[{{ forloop.counter0 }}] + ",1)",
-            pointColor: "rgba(" + rgb_colors[{{ forloop.counter0 }}] + ",1)",
+            label: "My First dataset",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(" + rgb_colors[{{ forloop.counter0 }}] + ",1)",
-            data: [
-            {% for value in dataset %}
-            {{ value }},
-            {% endfor %}
-            ]
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: [65, 59, 80, 81, 56, 55, 40]
         },
-        {% endfor %}
-      ]
+        {
+            label: "My Second dataset",
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data: [28, 48, 40, 19, 86, 27, 90]
+        }
+    ]
 };
 
 
 var ctx = document.getElementById("time-series").getContext("2d");
 var myLineChart = new Chart(ctx).Line(data);
-
-
-function goToLocationWith(locationId){
-    window.location.href = '?location=' + locationId;
-}
 
 </script>
 
