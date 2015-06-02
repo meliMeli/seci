@@ -25,16 +25,17 @@ class Location(models.Model):
         (AREQUIPA, 'Arequipa'),
     )
 
-    name = models.CharField(max_length=200)
+    # name = models.CharField(max_length=200)
     canonical_name = models.CharField(max_length=200)
-    parent = models.ForeignKey('Location', null=True, blank=True)
-    target_type = models.IntegerField(default=REGION, choices=TARGET_TYPE_CHOICES)
-    region_code = models.IntegerField(default=AREQUIPA, choices=REGION_CODE_CHOICES)
+    # parent = models.ForeignKey('Location', null=True, blank=True)
+    # target_type = models.IntegerField(default=REGION, choices=TARGET_TYPE_CHOICES)
+    # region_code = models.IntegerField(default=AREQUIPA, choices=REGION_CODE_CHOICES)
     latitude = models.FloatField()
     longitude = models.FloatField()
 
     def __str__(self):
         return self.canonical_name
+
 
     def get_month_formatted_data(self, start_year, start_month, end_year, end_month):
         response = {
@@ -43,10 +44,6 @@ class Location(models.Model):
         }
 
         # Fill labels
-
-        label_maper = {}
-        counter = 0
-
         for year in range(start_year, end_year+1):
             start_month_loop = 1
             if start_year == year:
@@ -55,9 +52,7 @@ class Location(models.Model):
             for month in range(start_month_loop, 13):
                 if month > end_month and year==end_year:
                     break
-                label_maper[(year, month)] = counter
                 response['labels'].append(calendar.month_name[month] + ' ' + str(year))
-                counter += 1
 
         # Fill dataset
         data = MonthAggregationData.objects.filter(
@@ -89,9 +84,9 @@ class MonthAggregationData(models.Model):
         (VIOLENT_CRIME, 'Violent crime'),
         (MURDER, 'Murder'),
         (FORCIBLE_RAPE, 'Forcible rape'),
+        (ROBBERY, 'Robbery'),
     )
     '''
-        (ROBBERY, 'Robbery'),
         (AGGRAVATED_ASSAULT, 'Aggravated assault'),
         (PROPERTY_CRIME, 'Property crime'),
         (BURGLARY, 'Burglary'),
@@ -100,6 +95,7 @@ class MonthAggregationData(models.Model):
         (ARSON, 'Arson'),
     )
     '''
+
 
     YEAR_CHOICES = []
     for year in range(1980, (datetime.datetime.now().year+1)):

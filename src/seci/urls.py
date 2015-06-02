@@ -18,6 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^generate/', include('timeseries.urls', namespace='timeseries')),
+    url(r'^timeseries/', include('timeseries.urls', namespace='timeseries')),
     url(r'^', include('main.urls', namespace='main')),
 ]

@@ -15,6 +15,7 @@ def generate_data(request):
     end_year = 2015
     end_month = 5
 
+    '''
     def generate_for_location(parent_location, year, month, event_type, left):
         # Retrieve all children
         location_children_list = Location.objects.filter(parent=parent_location)
@@ -41,10 +42,11 @@ def generate_data(request):
             month_aggregation.save()
 
             generate_for_location(location, year, month, event_type, location_events)
-
+    '''
 
     # Retrieve all locations
-    location_list = Location.objects.filter(parent__isnull=True)
+    # location_list = Location.objects.filter(parent__isnull=True)
+    location_list = Location.objects.all()
 
     for location in location_list:
         for event_type, event_name in MonthAggregationData.EVENT_TYPE_CHOICES:
@@ -58,6 +60,7 @@ def generate_data(request):
                 for month in range(start_month_loop, 13):
                     if month > end_month and year==end_year:
                         break
+
                     random_variation = events//random.randint(3, 12)
                     events = events + random.randint(random_variation*-1, random_variation)
                     if events < 0:
@@ -71,6 +74,6 @@ def generate_data(request):
                         )
                     month_aggregation.events=events
                     month_aggregation.save()
-                    generate_for_location(location, year, month, event_type, events)
+                    # generate_for_location(location, year, month, event_type, events)
 
     return HttpResponse('Generated')
