@@ -17,7 +17,6 @@ def home(request):
         end_year = 2015
         end_month = 5
 
-
         location = get_object_or_404(Location, id=location_id)
         context['location'] = location
         context['data'] = location.get_month_formatted_data(start_year, start_month, end_year, end_month)
